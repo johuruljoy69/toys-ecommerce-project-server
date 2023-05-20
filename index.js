@@ -24,10 +24,25 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-      // await client.connect();
+    // await client.connect();
 
     const galleryCollection = client.db('toyProducts').collection('gallery')
     const addedToyCollection = client.db('toyProducts').collection('addedToys')
+
+    const indexKeys = { toyName: 1, category: 1 }
+    const indexOptions = { name: "toyNameCategory" }
+     await addedToyCollection.createIndex(indexKeys, indexOptions)
+
+    app.get('/getToyByText/:text', async (req, res) => {
+      const searchText = req.params.text;
+      const result = await addedToyCollection.find({
+        $or: [
+          { toyName: { $regex: searchText, $options: "i"} },
+          {category: {$regex: searchText, $options: "i"}},
+        ],
+      }).toArray();
+      res.send(result);
+    })
 
 
     app.get('/gallery', async (req, res) => {
@@ -68,8 +83,8 @@ async function run() {
 
     app.put('/addedToys/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
-      const options = {upsert: true}
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true }
       const updatedToy = req.body;
       const toy = {
         $set: {
