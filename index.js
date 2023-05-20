@@ -3,7 +3,7 @@ const cors = require('cors')
 const app = express()
 require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const port = process.env.PORT || 5000 ;
+const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors())
@@ -32,36 +32,46 @@ async function run() {
 
 
     app.get('/gallery', async (req, res) => {
-        const cursor = galleryCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
+      const cursor = galleryCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     })
-    
+
 
     // added all toys is here
-    app.get('/addedToys', async(req, res) => {
-            console.log(req.query.email);
-            let query = {};
-            if (req.query?.email) {
-                query = { email: req.query.email }
-            }
-            const result = await addedToyCollection.find(query).toArray();
-            res.send(result)
+    app.get('/addedToys', async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email }
+      }
+      const result = await addedToyCollection.find(query).toArray();
+      res.send(result)
     })
-    
-    
+
+    app.get('/addedToys/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const options = {
+        projection: {_id: 0, sellerName: 1, toyName: 1, toyPhoto: 1,  price: 1, category: 1, quantity: 1, rating:1, description: 1  }     
+      }
+      const result = await addedToyCollection.findOne(query, options);
+      res.send(result);
+    })
+
+
     app.post('/addedToys', async (req, res) => {
-        const addedToys = req.body;
-        console.log(addedToys);
-        const result = await addedToyCollection.insertOne(addedToys)
-        res.send(result)
+      const addedToys = req.body;
+      console.log(addedToys);
+      const result = await addedToyCollection.insertOne(addedToys)
+      res.send(result)
     })
 
     app.delete('/addedToys/:id', async (req, res) => {
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id)}
-        const result = await addedToyCollection.deleteOne(query)
-        res.send(result)
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await addedToyCollection.deleteOne(query)
+      res.send(result)
     })
 
 
@@ -69,7 +79,7 @@ async function run() {
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    
+
     // await client.close();
   }
 }
@@ -78,9 +88,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Toys Server is Running')
+  res.send('Toys Server is Running')
 })
 
 app.listen(port, (req, res) => {
-    console.log(`Toys server is running on port: ${port}`);
+  console.log(`Toys server is running on port: ${port}`);
 })
