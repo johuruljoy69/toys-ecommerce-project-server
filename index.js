@@ -24,8 +24,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+      // await client.connect();
 
     const galleryCollection = client.db('toyProducts').collection('gallery')
     const addedToyCollection = client.db('toyProducts').collection('addedToys')
@@ -67,7 +66,7 @@ async function run() {
       res.send(result)
     })
 
-    app.patch('/addedToys/:id', async (req, res) => {
+    app.put('/addedToys/:id', async (req, res) => {
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)};
       const options = {upsert: true}
@@ -81,7 +80,9 @@ async function run() {
           category: updatedToy.category,
           price: updatedToy.price,
           quantity: updatedToy.quantity,
-          description: updatedToy.description
+          description: updatedToy.description,
+          date: updatedToy.date,
+          rating: updatedToy.rating,
         }
       }
       const result = await addedToyCollection.updateOne(filter, options, toy)
