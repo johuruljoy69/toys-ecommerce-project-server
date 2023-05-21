@@ -50,7 +50,7 @@ async function run() {
     })
 
 
-    // added all toys is here
+    // added all toys
     app.get('/addedToys', async (req, res) => {
       console.log(req.query.email);
       let query = {};
@@ -58,7 +58,7 @@ async function run() {
         query = { email: req.query.email }
       }
       const options = {
-        sort: {'price': -1}
+        sort: {'price': 1}
       }
       const result = await addedToyCollection.find(query, options).toArray();
       res.send(result)
