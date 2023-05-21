@@ -24,8 +24,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
-
     const galleryCollection = client.db('toyProducts').collection('gallery')
     const addedToyCollection = client.db('toyProducts').collection('addedToys')
 
@@ -83,6 +81,7 @@ async function run() {
 
     app.put('/addedToys/:id', async (req, res) => {
       const id = req.params.id;
+      console.log(id);
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true }
       const updatedToy = req.body;
@@ -100,7 +99,7 @@ async function run() {
           rating: updatedToy.rating,
         }
       }
-      const result = await addedToyCollection.updateOne(filter, options, toy)
+      const result = await addedToyCollection.updateOne(filter,toy, options )
       res.send(result);
     })
 
@@ -117,7 +116,6 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
 
-    // await client.close();
   }
 }
 run().catch(console.dir);
