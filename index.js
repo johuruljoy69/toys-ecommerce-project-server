@@ -65,7 +65,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
       const options = {
-        projection: { _id: 0, sellerName: 1, email: 1, toyName: 1, toyPhoto: 1, price: 1, category: 1, quantity: 1, rating: 1, description: 1 }
+        projection: { _id: 0, sellerName: 1, email: 1, toyName: 1, toyPhoto: 1, price: 1, category: 1, quantity: 1, rating: 1, description: 1, date:1, like: 1 }
       }
       const result = await addedToyCollection.findOne(query, options);
       res.send(result);
@@ -97,6 +97,7 @@ async function run() {
           description: updatedToy.description,
           date: updatedToy.date,
           rating: updatedToy.rating,
+          like: updatedToy.like,
         }
       }
       const result = await addedToyCollection.updateOne(filter,toy, options )
