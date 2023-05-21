@@ -35,8 +35,8 @@ async function run() {
       const searchText = req.params.text;
       const result = await addedToyCollection.find({
         $or: [
-          { toyName: { $regex: searchText, $options: "i"} },
-          {category: {$regex: searchText, $options: "i"}},
+          { toyName: { $regex: searchText, $options: "i" } },
+          { category: { $regex: searchText, $options: "i" } },
         ],
       }).toArray();
       res.send(result);
@@ -52,13 +52,13 @@ async function run() {
 
     // added all toys
     app.get('/addedToys', async (req, res) => {
-      console.log(req.query.email);
+      const sort = req.query.sort;
       let query = {};
       if (req.query?.email) {
         query = { email: req.query.email }
       }
       const options = {
-        sort: {'price': 1}
+        sort: { 'price': sort === 'ascending' ? 1 : -1 }
       }
       const result = await addedToyCollection.find(query, options).toArray();
       res.send(result)
@@ -68,7 +68,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
       const options = {
-        projection: { _id: 0, sellerName: 1, email: 1, toyName: 1, toyPhoto: 1, price: 1, category: 1, quantity: 1, rating: 1, description: 1, date:1, like: 1 }
+        projection: { _id: 0, sellerName: 1, email: 1, toyName: 1, toyPhoto: 1, price: 1, category: 1, quantity: 1, rating: 1, description: 1, date: 1, like: 1 }
       }
       const result = await addedToyCollection.findOne(query, options);
       res.send(result);
@@ -103,7 +103,7 @@ async function run() {
           like: updatedToy.like,
         }
       }
-      const result = await addedToyCollection.updateOne(filter,toy, options )
+      const result = await addedToyCollection.updateOne(filter, toy, options)
       res.send(result);
     })
 
