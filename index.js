@@ -27,9 +27,9 @@ async function run() {
     const galleryCollection = client.db('toyProducts').collection('gallery')
     const addedToyCollection = client.db('toyProducts').collection('addedToys')
 
-    const indexKeys = { toyName: 1, category: 1 }
-    const indexOptions = { name: "toyNameCategory" }
-     await addedToyCollection.createIndex(indexKeys, indexOptions)
+    // const indexKeys = { toyName: 1, category: 1 }
+    // const indexOptions = { name: "toyNameCategory" }
+    //  await addedToyCollection.createIndex(indexKeys, indexOptions)
 
     app.get('/getToyByText/:text', async (req, res) => {
       const searchText = req.params.text;
@@ -112,8 +112,8 @@ async function run() {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
 
   }
